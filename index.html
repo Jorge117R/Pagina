@@ -127,7 +127,7 @@
     // Actualizar el estado cuando cambie la base de datos
     onValue(basureroRef, (snapshot) => {
       const data = snapshot.val();
-      const porcentaje = data ? data.Porcentaje : 0;
+      const porcentaje = data ? data.Porcentaje : ;
       updateStatus(porcentaje);
     });
 
