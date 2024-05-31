@@ -101,12 +101,12 @@
   
   <!-- Add Firebase -->
   <script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    // Importación de Módulos Firebase
+    import { initializeApp } from "firebase/app";
+    import { getAnalytics } from "firebase/analytics";
+    import { getDatabase, ref, onValue } from "firebase/database";
 
-    // Your web app's Firebase configuration
+    // Configuración de Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyAkOC2MXuJlSHVnA-2hww4wyfNhXcuYYII",
       authDomain: "basurero-be7c9.firebaseapp.com",
@@ -118,15 +118,13 @@
       measurementId: "G-1P7J8HKQX1"
     };
 
-    // Initialize Firebase
+    // Referencia y Observación de Datos en Firebase
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
     const database = getDatabase(app);
-
-    // Reference to the specific node in the database
     const basureroRef = ref(database, 'Estado/-Nz4fmqNX4Ho07HH62sT');
     
-    // Update the status when the database changes
+    // Actualizar el estado cuando cambie la base de datos
     onValue(basureroRef, (snapshot) => {
       const data = snapshot.val();
       const porcentaje = data ? data.Porcentaje : 0;
@@ -141,7 +139,7 @@
       percentageElement.textContent = percentage + '%';
       progressElement.style.width = percentage + '%';
       
-      // Change the background color based on the percentage
+      // Cambiar el color de fondo en función del porcentaje
       if (percentage < 50) {
         bodyElement.style.backgroundColor = '#e8f5e9'; // Light green
         percentageElement.style.color = '#388e3c';
