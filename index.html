@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estado del Basurero</title>
+  <style>
+    /* Layout */
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      transition: background-color 0.3s ease;
+    }
+    
+    .container {
+      max-width: 600px;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* Typography */
+    .title {
+      font-size: 32px;
+      margin-bottom: 20px;
+      color: #388e3c;
+    }
+    
+    .percentage {
+      font-size: 64px;
+      color: #333;
+      margin-bottom: 20px;
+      animation: pulse 1.5s infinite;
+    }
+    
+    /* Progress Bar */
+    .progress-bar {
+      width: 100%;
+      background-color: #c8e6c9;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    
+    .progress {
+      height: 30px;
+      background-color: #2e7d32;
+      width: 0;
+      border-radius: 5px;
+      transition: width 0.3s ease;
+    }
+
+    .leaves {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 60px;
+      background: url('https://www.example.com/leaves.png') repeat-x bottom;
+      background-size: contain;
+      pointer-events: none;
+    }
+    
+    /* Animations */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    /* Colors */
+    .low { color: #388e3c; }
+    .high { color: #d32f2f; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="title">Estado del Basurero</h1>
+    <div class="percentage" id="percentage">0%</div>
+    <div class="progress-bar">
+      <div class="progress" id="progress"></div>
+    </div>
+    <div class="leaves"></div>
+  </div>
+  
+  <!-- Add Firebase -->
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAkOC2MXuJlSHVnA-2hww4wyfNhXcuYYII",
+      authDomain: "basurero-be7c9.firebaseapp.com",
+      databaseURL: "https://basurero-be7c9-default-rtdb.firebaseio.com",
+      projectId: "basurero-be7c9",
+      storageBucket: "basurero-be7c9.appspot.com",
+      messagingSenderId: "296126121654",
+      appId: "1:296126121654:web:63ac8c74ba1b9c35b6c817",
+      measurementId: "G-1P7J8HKQX1"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const database = getDatabase(app);
+
+    // Reference to the specific node in the database
+    const basureroRef = ref(database, 'Estado/-Nz4fmqNX4Ho07HH62sT');
+    
+    // Update the status when the database changes
+    onValue(basureroRef, (snapshot) => {
+      const data = snapshot.val();
+      const porcentaje = data ? data.Porcentaje : 0;
+      updateStatus(porcentaje);
+    });
+
+    function updateStatus(percentage) {
+      const percentageElement = document.getElementById('percentage');
+      const progressElement = document.getElementById('progress');
+      const bodyElement = document.body;
+      
+      percentageElement.textContent = percentage + '%';
+      progressElement.style.width = percentage + '%';
+      
+      // Change the background color based on the percentage
+      if (percentage < 50) {
+        bodyElement.style.backgroundColor = '#e8f5e9'; // Light green
+        percentageElement.style.color = '#388e3c';
+        percentageElement.style.animation = 'none';
+      } else if (percentage < 80) {
+        bodyElement.style.backgroundColor = '#fff9c4'; // Light yellow
+        percentageElement.style.color = '#fbc02d';
+        percentageElement.style.animation = 'none';
+      } else {
+        bodyElement.style.backgroundColor = '#ffccbc'; // Light red
+        percentageElement.style.color = '#d32f2f';
+        percentageElement.style.animation = 'blink 1s infinite';
+      }
+    }
+  </script>
+</body>
+</html>
